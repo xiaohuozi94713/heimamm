@@ -20,7 +20,7 @@
         <el-form-item prop="password">
           <el-input v-model="form.password" prefix-icon="el-icon-lock" placeholder="请输入密码"></el-input>
         </el-form-item>
-        <el-form-item  prop="code">
+        <el-form-item prop="code">
           <!-- 使用栅格系统来添加内容 -->
           <!-- el-row:一行 -->
           <el-row>
@@ -44,16 +44,24 @@
           <el-button class="loginBtn" type="primary" @click="onSubmit">登录</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button class="loginBtn" type="primary">取消</el-button>
+          <el-button class="loginBtn" type="primary" @click="openRegister">注册</el-button>
         </el-form-item>
       </el-form>
     </div>
     <img src="../../assets/login_banner_ele.png" class="rightImg" alt />
+    <!-- 注册组件 -->
+    <register ref="register" />
   </div>
 </template>
 
 <script>
+//导入register组件
+import register from "./components/register";
 export default {
+  //注册组件
+  components: {
+    register
+  },
   data() {
     return {
       form: {
@@ -72,15 +80,20 @@ export default {
           //验证规则：required 必填项  message 不填时的提示信息 trigger 触发验证码的条件
           { required: true, message: "密码不能为空", trigger: "blur" },
           //验证规则：min 最小长度  max 最大长度 message 提示信息 trigger 触发验证码的条件
-          { min: 5, max: 10, message:"长度必须是5~10",trigger: "blur" }
+          { min: 5, max: 10, message: "长度必须是5~10", trigger: "blur" }
         ],
         code: [
           { required: true, message: "验证码不能为空", trigger: "blur" },
-          { min: 4, max: 4, message:"长度必须是4",trigger: "blur" }
+          { min: 4, max: 4, message: "长度必须是4", trigger: "blur" }
         ],
         //是否阅读的验证规则
-        isCheck:[
-          { type: 'array', required: true, message: '请阅读并同意用户协议和隐私条款', trigger: 'change' }
+        isCheck: [
+          {
+            type: "array",
+            required: true,
+            message: "请阅读并同意用户协议和隐私条款",
+            trigger: "change"
+          }
         ]
       }
     };
@@ -89,16 +102,20 @@ export default {
     //点击登录按钮时触发
     onSubmit() {
       //调用form的验证方法
-     this.$refs.form.validate((valid) => {
-          if (valid) {
-            this.$message({
-              message:'验证通过',
-              type:'success'
-            })
-          } else {
-            this.$message.error('验证不通过')
-          }
-        });
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          this.$message({
+            message: "验证通过",
+            type: "success"
+          });
+        } else {
+          this.$message.error("验证不通过");
+        }
+      });
+    },
+    //打开注册面板
+    openRegister() {
+      this.$refs.register.dialogFormVisible = true;
     }
   }
 };
