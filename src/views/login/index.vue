@@ -13,7 +13,7 @@
       -->
       <el-form :rules="rules" class="loginform" ref="form" :model="form" label-width="0">
         <!-- el-form-item：表单中的一个部分，表单域 -->
-        <el-form-item>
+        <el-form-item prop="phone">
           <!-- prefix-icon:输入框左侧得小图标 -->
           <el-input v-model="form.phone" prefix-icon="el-icon-user" placeholder="请输入手机号"></el-input>
         </el-form-item>
@@ -29,7 +29,7 @@
               <el-input v-model="form.code" prefix-icon="el-icon-key" placeholder="请输入验证码"></el-input>
             </el-col>
             <el-col :span="7">
-              <img src="../../assets/login_captcha.png" class="loginCode" alt />
+              <img :src="imgUrl" class="loginCode" @click="getCode" alt />
             </el-col>
           </el-row>
         </el-form-item>
@@ -57,6 +57,17 @@
 <script>
 //导入register组件
 import register from "./components/register";
+
+var checkPhone = (rule, value, callback) => {
+  //定义一个验证手机号码的正则
+  var reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
+  if (reg.test(value)) {
+    callback();
+  } else {
+    callback(new Error("手机号不正确"));
+  }
+};
+
 export default {
   //注册组件
   components: {
@@ -64,6 +75,8 @@ export default {
   },
   data() {
     return {
+      imgUrl:
+        process.env.VUE_APP_ONLINEURL + "/captcha?type=sendsms&t=" + new Date(),
       form: {
         //手机号
         phone: "",
@@ -76,15 +89,22 @@ export default {
       },
       //设置表单验证规则
       rules: {
+        //验证手机号码规则
+        phone: [
+          { required: true, message: "手机号不能为空", trigger: "blur" },
+          { validator: checkPhone, trigger: "blur" }
+        ],
+        //验证密码规则
         password: [
           //验证规则：required 必填项  message 不填时的提示信息 trigger 触发验证码的条件
           { required: true, message: "密码不能为空", trigger: "blur" },
           //验证规则：min 最小长度  max 最大长度 message 提示信息 trigger 触发验证码的条件
-          { min: 5, max: 10, message: "长度必须是5~10", trigger: "blur" }
+          { min: 5, max: 10, message: "密码长度必须是5~10", trigger: "blur" }
         ],
+        //验证验证码规则
         code: [
           { required: true, message: "验证码不能为空", trigger: "blur" },
-          { min: 4, max: 4, message: "长度必须是4", trigger: "blur" }
+          { min: 4, max: 4, message: "验证码长度必须是4", trigger: "blur" }
         ],
         //是否阅读的验证规则
         isCheck: [
@@ -112,6 +132,10 @@ export default {
           this.$message.error("验证不通过");
         }
       });
+    },
+    //获取验证码
+    getCode() {
+      this.imgUrl = process.env.VUE_APP_ONLINEURL + "/captcha?type=sendsms&t=" + new Date();
     },
     //打开注册面板
     openRegister() {
@@ -178,6 +202,7 @@ export default {
       .loginCode {
         width: 100%;
         height: 40px;
+        cursor: pointer;
       }
 
       .loginBtn {

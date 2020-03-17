@@ -19,6 +19,6 @@ Vue.config.productionTip = false
 
 new Vue({
   render: h => h(App),
-  //将路由注入到vue视力
+  //将路由注入到vue实例
   router
 }).$mount('#app')
