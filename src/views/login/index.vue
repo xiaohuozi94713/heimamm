@@ -57,16 +57,18 @@
 <script>
 //导入register组件
 import register from "./components/register";
+//导入自定义校验规则mycheck.js 按需导入
+import { checkPhone } from "@/utils/mycheck.js";
 
-var checkPhone = (rule, value, callback) => {
-  //定义一个验证手机号码的正则
-  var reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
-  if (reg.test(value)) {
-    callback();
-  } else {
-    callback(new Error("手机号不正确"));
-  }
-};
+// var checkPhone = (rule, value, callback) => {
+//   //定义一个验证手机号码的正则
+//   var reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
+//   if (reg.test(value)) {
+//     callback();
+//   } else {
+//     callback(new Error("手机号不正确"));
+//   }
+// };
 
 export default {
   //注册组件
@@ -76,7 +78,7 @@ export default {
   data() {
     return {
       imgUrl:
-        process.env.VUE_APP_ONLINEURL + "/captcha?type=sendsms&t=" + new Date(),
+        process.env.VUE_APP_ONLINEURL + "/captcha?type=login&t=" + new Date(),
       form: {
         //手机号
         phone: "",
@@ -135,7 +137,8 @@ export default {
     },
     //获取验证码
     getCode() {
-      this.imgUrl = process.env.VUE_APP_ONLINEURL + "/captcha?type=sendsms&t=" + new Date();
+      this.imgUrl =
+        process.env.VUE_APP_ONLINEURL + "/captcha?type=login&t=" + new Date();
     },
     //打开注册面板
     openRegister() {

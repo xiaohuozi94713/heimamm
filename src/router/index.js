@@ -12,6 +12,11 @@ Vue.use(VueRouter)
 //路由实例化
 const router = new VueRouter({
     routes: [
+        //路由重定向 默认跳转到login页面
+        {
+            path:'/',
+            redirect:'/login'
+        },
         {
             path: '/login',
             component: Login
