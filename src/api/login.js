@@ -5,7 +5,9 @@ import axios from 'axios'
 
 //创建一个新的axios对象，并且设置基地址
 var instance = axios.create({
-    baseURL: ProcessingInstruction.env.VUE_APP_URL
+    baseURL: process.env.VUE_APP_URL,
+    //由于使用到了验证码，跨域须携带cookie属性
+    withCredentials: true
 });
 
 //axios.create:单独创建一个新的axios实例
@@ -28,7 +30,6 @@ export function apiLogin({ phone, password, code }) {
             password: password,
             code: code
         }
-
 
     })
 }

@@ -34,7 +34,7 @@
           </el-row>
         </el-form-item>
         <el-form-item prop="isCheck">
-          <el-checkbox v-model="form.isCheck">
+          <el-checkbox v-model="form.isCheck" label="A">
             我已阅读并同意
             <el-link type="primary">用户协议</el-link>和
             <el-link type="primary">隐私条款</el-link>
@@ -59,6 +59,10 @@
 import register from "./components/register";
 //导入自定义校验规则mycheck.js 按需导入
 import { checkPhone } from "@/utils/mycheck.js";
+//导入login.js完成登录请求
+import { apiLogin } from "@/api/login.js";
+//导入mytoken.js处理localstorage
+import { setToken } from "../../utils/mytoken";
 
 // var checkPhone = (rule, value, callback) => {
 //   //定义一个验证手机号码的正则
@@ -77,15 +81,14 @@ export default {
   },
   data() {
     return {
-      imgUrl:
-        process.env.VUE_APP_ONLINEURL + "/captcha?type=login&t=" + new Date(),
+      imgUrl: process.env.VUE_APP_URL + "/captcha?type=login&t=" + new Date(),
       form: {
         //手机号
-        phone: "",
+        phone: "18511111111",
         //是否阅读 多选框初始值必须设置为数组，否则会出问题
-        isCheck: [],
+        isCheck: ['A'],
         //密码
-        password: "",
+        password: "12345678",
         //验证码
         code: ""
       },
@@ -126,9 +129,16 @@ export default {
       //调用form的验证方法
       this.$refs.form.validate(valid => {
         if (valid) {
-          this.$message({
-            message: "验证通过",
-            type: "success"
+          apiLogin({
+            phone: this.form.phone,
+            password: this.form.password,
+            code: this.form.code
+          }).then(res => {
+            //window.console.log(res.data.data.token); 登录token
+            //跳转到首页
+            this.$router.push('/index');
+            //将登录信息保存起来（保存token）
+            setToken(res.data.data.token);
           });
         } else {
           this.$message.error("验证不通过");
@@ -138,7 +148,7 @@ export default {
     //获取验证码
     getCode() {
       this.imgUrl =
-        process.env.VUE_APP_ONLINEURL + "/captcha?type=login&t=" + new Date();
+        process.env.VUE_APP_URL + "/captcha?type=login&t=" + new Date();
     },
     //打开注册面板
     openRegister() {
